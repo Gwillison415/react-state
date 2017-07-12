@@ -1,34 +1,46 @@
 import React, { Component } from 'react';
+import './ClickCounter.css';
 
-class Counter extends Component {
+class ClickCounter extends Component {
   constructor(props) {
-    super(props);
-    this.state = {timesClicked: 0,
+    super(props)
+
+    this.state = {
+      timesClicked: 0,
       timeSinceClicked: 0,
       timeLastClicked: Date.now()
-    };
-    this.incrementCounter = this.incrementCounter.bind(this);
-    this.updateTime = this.updateTime.bind(this);
-    setInterval(this.updateTime, 1000);
-  }
-  updateTime() {
-    const timeSinceClicked = Date.now() - Math.max(this.state.timeLastClicked, this.props.lastSync);
-    this.setState({timeSinceClicked});
-  }
-  incrementCounter(){
+    }
 
-    this.setState({timesClicked : this.state.timesClicked + 1,
-    timeSinceClicked: 0 }) //could cause bug, should use callback in the future
-    this.props.lastSibClick.timeStamp = timeLastClicked;
-    console.log((this.state.timesClicked));
+    this.incrementCounter = this.incrementCounter.bind(this);
+    this.updateTime = this.updateTime.bind(this)
+
+    setInterval(this.updateTime, 1);
   }
+
+  updateTime() {
+    let timeSinceClicked = Date.now() - Math.max(this.state.timeLastClicked, this.props.lastSync);
+
+    this.setState({timeSinceClicked})
+  }
+
+  incrementCounter(){
+    let timesClicked = this.state.timesClicked + 1;
+    let timeLastClicked = Date.now();
+    // this.props.lastSibClick.timeStamp = "No such luck Bob.";
+    this.props.lastSibClickHandle(timeLastClicked);
+
+    this.setState({timesClicked, timeLastClicked});
+  }
+
   render() {
-    let bestClass = this.state.timeLastClicked === this.props.lastSibClickTime ? 'bestChild' : '' ;
+    let bestClass = this.state.timeLastClicked === this.props.lastSibClickTime ? 'bestChild' : '';
     return (
-      <div className={bestClass} onClick={this.incrementCounter}> I have clicked {this.state.timesClicked} times. Futhermore, it has been {this.state.timeSinceClicked} since last click </div>
+      <div className={`ClickCounter ${bestClass}`}   onClick={() => this.incrementCounter()}>
+        This has been clicked {this.state.timesClicked} times.
+        Futhermore, it has been {this.state.timeSinceClicked}ms since my last click
+      </div>
     );
   }
-
 }
 
-export default Counter;
+export default ClickCounter;

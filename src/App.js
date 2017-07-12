@@ -1,43 +1,50 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Counter from './clickCounter';
+import logo from './logo.svg';
+import ClickCounter from './ClickCounter'
 
 class App extends Component {
   constructor(props) {
     super(props);
-    let countersholder = Array(this.props.countNum).fill(1);
-    for (var i = 0; i < countersholder.length; i++) {
-      countersholder[i] =i;
+
+    let countersHolder = Array(this.props.countNum).fill(1);
+    for(let i = 0; i < countersHolder.length; i++) {
+      countersHolder[i] = i;
     }
+
     this.state = {
       lastSync: Date.now(),
-      lastChildClick: {
-        timeStamp: -Infinity,
-      }
-    };
+      lastChildClick: -Infinity,
+      countersHolder: countersHolder
+    }
+
+    this.synchronize = this.synchronize.bind(this);
+    this.setChildClickTime = this.setChildClickTime.bind(this);
   }
-  synchronize() {
-    let lastSync = Date.Now();
-    this.setState({lastSync});
+
+  synchronize(){
+    let lastSync = Date.now();
+    console.log(this.state.lastChildClick);
+    this.setState({lastSync})
   }
-  setChilckTime(time){
-    if(typeof time !== 'number') throw new TypeErrpr("you can only pass me a number")
-    let lastChildClick =time;
+
+  setChildClickTime(time){
+    // if(typeof time !== 'number') throw new TypeError("you can only pass me a number")
+    let lastChildClick = time;
     this.setState({lastChildClick});
   }
+
   render() {
-    return (
+
+    return(
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
         </div>
-        <button onClick={() => this.synchronize}> Sync </button>
-        <Counter lastSync = {this.state.lastSync} lastSibClick={this.state.lastChildClick} last/>
-        <Counter lastSync = {this.state.lastSync}/>
-        <Counter lastSync = {this.state.lastSync}/>
-        <Counter lastSync = {this.state.lastSync}/>
+        <button onClick={this.synchronize}> Sync </button>
+        {this.state.countersHolder.map((key) => {
+          return <ClickCounter key={key} lastSync={this.state.lastSync} lastSibClickHandle={this.setChildClickTime} lastSibClickTime={this.state.lastChildClick}/>
+        })}
       </div>
     );
   }
